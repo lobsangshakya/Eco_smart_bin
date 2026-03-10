@@ -1,9 +1,20 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authService } from '../services/api';
+import type { User, LoginCredentials, SignupData, AuthResult } from '../types';
 
-const AuthContext = createContext(null);
+interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  loading: boolean;
+  login: (credentials: LoginCredentials) => Promise<AuthResult>;
+  signup: (userData: SignupData) => Promise<AuthResult>;
+  logout: () => Promise<void>;
+  updateUser: (userData: Partial<User>) => Promise<AuthResult>;
+}
 
-export const useAuth = () => {
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
@@ -11,16 +22,20 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
     checkAuth();
   }, []);
 
-  const checkAuth = async () => {
+  const checkAuth = async (): Promise<void> => {
     if (authService.isAuthenticated()) {
       try {
         const userData = await authService.getProfile();
@@ -34,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   };
 
-  const login = async (credentials) => {
+  const login = async (credentials: LoginCredentials): Promise<AuthResult> => {
     try {
       const data = await authService.login(credentials);
       setUser(data.user);
@@ -42,16 +57,17 @@ export const AuthProvider = ({ children }) => {
       return { success: true, data };
     } catch (error) {
       console.error('Login error details:', error);
-      if (error.code === 'ERR_NETWORK') {
+      const err = error as { code?: string; response?: { data?: { error?: string } } };
+      if (err.code === 'ERR_NETWORK') {
         return {
           success: false,
           error: 'Cannot connect to server. Is Django running on port 8000?',
         };
       }
-      if (error.response?.data?.error) {
+      if (err.response?.data?.error) {
         return {
           success: false,
-          error: error.response.data.error,
+          error: err.response.data.error,
         };
       }
       return {
@@ -61,7 +77,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const signup = async (userData) => {
+  const signup = async (userData: SignupData): Promise<AuthResult> => {
     try {
       const data = await authService.signup(userData);
       setUser(data.user);
@@ -69,46 +85,48 @@ export const AuthProvider = ({ children }) => {
       return { success: true, data };
     } catch (error) {
       console.error('Signup error details:', error);
-      if (error.code === 'ERR_NETWORK') {
+      const err = error as { code?: string; response?: { data?: string | Record<string, string[]> }; message?: string };
+      if (err.code === 'ERR_NETWORK') {
         return {
           success: false,
           error: 'Cannot connect to server. Is Django running on port 8000?',
         };
       }
-      if (error.response) {
+      if (err.response) {
         // Server responded with error
         return {
           success: false,
-          error: error.response.data || 'Signup failed',
+          error: err.response.data || 'Signup failed',
         };
       }
       return {
         success: false,
-        error: error.message || 'Signup failed',
+        error: err.message || 'Signup failed',
       };
     }
   };
 
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     await authService.logout();
     setUser(null);
     setIsAuthenticated(false);
   };
 
-  const updateUser = async (userData) => {
+  const updateUser = async (userData: Partial<User>): Promise<AuthResult> => {
     try {
       const updatedUser = await authService.updateProfile(userData);
       setUser(updatedUser);
-      return { success: true, data: updatedUser };
+      return { success: true, data: { user: updatedUser, tokens: { access: '', refresh: '' } } };
     } catch (error) {
+      const err = error as { response?: { data?: string } };
       return {
         success: false,
-        error: error.response?.data || 'Update failed',
+        error: err.response?.data || 'Update failed',
       };
     }
   };
 
-  const value = {
+  const value: AuthContextType = {
     user,
     isAuthenticated,
     loading,

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Home.css';
 
-const Home = () => {
+const Home: React.FC = () => {
   return (
     <div className="home-container">
       {/* Navbar */}
@@ -56,7 +56,7 @@ const Home = () => {
         <div className="content-text">
           <h3>FACILITY MANAGEMENT</h3>
           <h2>Efficient Spaces, Safe Places, Sustainable Futures</h2>
-          <p>Facility management is the comprehensive coordination and oversight of an organization's physical infrastructure to ensure efficiency, safety, and sustainability.</p>
+          <p>Facility management is the comprehensive coordination and oversight of an organization&apos;s physical infrastructure to ensure efficiency, safety, and sustainability.</p>
         </div>
         <div className="content-image">
           <img src="/Images/pic3.avif.jpeg" alt="Facility Management" />
@@ -138,7 +138,7 @@ const Home = () => {
       <section className="questions-section">
         <div className="questions-container">
           <h2>Got Questions?</h2>
-          <p>We are here to help you. Leave us a message and we'll get back to you with the details as soon as possible.</p>
+          <p>We are here to help you. Leave us a message and we&apos;ll get back to you with the details as soon as possible.</p>
           <Link to="/signup" className="contact-button">GET STARTED</Link>
         </div>
       </section>
