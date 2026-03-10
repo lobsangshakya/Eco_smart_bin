@@ -1,72 +1,45 @@
-# Eco-Smart Bin
+# Eco Smart Bin
 
-Django + React + TypeScript app with JWT auth.
+Eco Smart Bin is a web-based waste management system designed to encourage responsible waste disposal and promote environmental sustainability. The platform allows users to interact with a smart bin system, track disposal activities, and maintain records through a web interface.
 
-## Structure
+The project was developed using Django for the backend and HTML, CSS, and JavaScript for the frontend. It aims to demonstrate how technology can support cleaner and more sustainable communities through digital waste tracking systems.
 
-```
-Eco_smart_bin/
-├── Hello/          # Django config
-├── Home/           # API endpoints
-├── static/         # Images
-├── frontend/       # React + TypeScript app
-│   ├── src/
-│   │   ├── pages/      # Home, Login, Signup, Dashboard
-│   │   ├── services/   # API client (TypeScript)
-│   │   ├── contexts/   # Auth state (TypeScript)
-│   │   ├── types/      # TypeScript interfaces
-│   │   └── components/ # ProtectedRoute
-│   └── public/Images/  # Static assets
-└── requirements.txt
-```
+## Features
 
-## Quick Start
+* User authentication (login and signup)
+* Waste disposal tracking
+* Database storage for user activity
+* Web-based interface for interacting with the system
+* Foundation for smart waste management solutions
 
-**Backend:**
-```bash
+## Installation
+
+Clone the repository:
+
+git clone https://github.com/lobsangshakya/Eco_smart_bin.git
+cd Eco_smart_bin
+
+Create a virtual environment:
+
+python -m venv venv
+source venv/bin/activate
+
+## Install dependencies:
+
 pip install -r requirements.txt
+
+## Run migrations:
+
 python manage.py migrate
+
+## Start the development server:
+
 python manage.py runserver
-```
 
-**Frontend:**
-```bash
-cd frontend
-npm install
-npm run dev
-```
+Open the application at:
 
-Open `http://localhost:5173`
+http://127.0.0.1:8000
 
-## API Endpoints
+## Deployment
 
-| Method | Endpoint | Auth |
-|--------|----------|------|
-| POST | `/api/signup/` | No |
-| POST | `/api/login/` | No |
-| GET | `/api/profile/` | JWT |
-| POST | `/api/logout/` | JWT |
-
-## Tech Stack
-
-- **Backend:** Django, Django REST Framework, JWT
-- **Frontend:** React, TypeScript, Vite, React Router, Axios
-
-## TypeScript Structure
-
-All source files have been converted to TypeScript (`.tsx` / `.ts`):
-
-- `src/types/index.ts` - Type definitions for User, Tokens, API responses
-- `src/services/api.ts` - API client with typed requests
-- `src/contexts/AuthContext.tsx` - Auth state management with TypeScript
-- `src/pages/*.tsx` - Page components with proper typing
-- `src/components/*.tsx` - Reusable components with TypeScript
-
-## Building for Production
-
-```bash
-cd frontend
-npm run build
-```
-
-Static files will be generated in `frontend/dist/`.
+The project can be deployed using modern hosting platforms such as Vercel for the frontend and cloud services like Render or Railway for the backend.
