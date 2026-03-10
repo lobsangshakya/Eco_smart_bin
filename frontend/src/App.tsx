@@ -8,7 +8,7 @@ import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import './styles/App.css';
 
-function App() {
+const App: React.FC = () => {
   return (
     <AuthProvider>
       <Router>
@@ -28,6 +28,6 @@ function App() {
       </Router>
     </AuthProvider>
   );
-}
+};
 
 export default App;

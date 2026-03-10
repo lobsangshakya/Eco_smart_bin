@@ -1,6 +1,6 @@
 # Eco-Smart Bin
 
-Django + React app with JWT auth.
+Django + React + TypeScript app with JWT auth.
 
 ## Structure
 
@@ -9,11 +9,13 @@ Eco_smart_bin/
 ├── Hello/          # Django config
 ├── Home/           # API endpoints
 ├── static/         # Images
-├── frontend/       # React app
+├── frontend/       # React + TypeScript app
 │   ├── src/
 │   │   ├── pages/      # Home, Login, Signup, Dashboard
-│   │   ├── services/   # API client
-│   │   └── contexts/   # Auth state
+│   │   ├── services/   # API client (TypeScript)
+│   │   ├── contexts/   # Auth state (TypeScript)
+│   │   ├── types/      # TypeScript interfaces
+│   │   └── components/ # ProtectedRoute
 │   └── public/Images/  # Static assets
 └── requirements.txt
 ```
@@ -48,4 +50,23 @@ Open `http://localhost:5173`
 ## Tech Stack
 
 - **Backend:** Django, Django REST Framework, JWT
-- **Frontend:** React, Vite, React Router, Axios
+- **Frontend:** React, TypeScript, Vite, React Router, Axios
+
+## TypeScript Structure
+
+All source files have been converted to TypeScript (`.tsx` / `.ts`):
+
+- `src/types/index.ts` - Type definitions for User, Tokens, API responses
+- `src/services/api.ts` - API client with typed requests
+- `src/contexts/AuthContext.tsx` - Auth state management with TypeScript
+- `src/pages/*.tsx` - Page components with proper typing
+- `src/components/*.tsx` - Reusable components with TypeScript
+
+## Building for Production
+
+```bash
+cd frontend
+npm run build
+```
+
+Static files will be generated in `frontend/dist/`.

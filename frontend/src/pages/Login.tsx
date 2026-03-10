@@ -1,20 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import type { LoginCredentials } from '../types';
 import '../styles/Auth.css';
 
-const Login = () => {
-  const [formData, setFormData] = useState({
+interface FormData {
+  username: string;
+  password: string;
+}
+
+const Login: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({
     username: '',
     password: '',
   });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -22,17 +28,18 @@ const Login = () => {
     setError('');
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    const result = await login(formData);
+    const credentials: LoginCredentials = formData;
+    const result = await login(credentials);
     
     if (result.success) {
       navigate('/dashboard');
     } else {
-      setError(result.error);
+      setError(typeof result.error === 'string' ? result.error : 'Login failed');
     }
     
     setLoading(false);
@@ -82,7 +89,7 @@ const Login = () => {
 
         <div className="auth-footer">
           <p>
-            Don't have an account? <Link to="/signup">Sign up</Link>
+            Don&apos;t have an account? <Link to="/signup">Sign up</Link>
           </p>
           <Link to="/" className="back-link">← Back to Home</Link>
         </div>

@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import type { SignupData } from '../types';
 import '../styles/Auth.css';
 
-const Signup = () => {
-  const [formData, setFormData] = useState({
+interface FormData {
+  username: string;
+  email: string;
+  password: string;
+  password_confirm: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  address: string;
+}
+
+const Signup: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({
     username: '',
     email: '',
     password: '',
@@ -14,13 +26,13 @@ const Signup = () => {
     phone: '',
     address: '',
   });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   
   const { signup } = useAuth();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -28,7 +40,7 @@ const Signup = () => {
     setError('');
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -45,16 +57,17 @@ const Signup = () => {
       return;
     }
 
-    const result = await signup(formData);
+    const userData: SignupData = formData;
+    const result = await signup(userData);
     
     if (result.success) {
       navigate('/dashboard');
     } else {
       console.error('Signup error:', result.error);
-      let errorMsg;
+      let errorMsg: string;
       if (typeof result.error === 'object') {
         // Handle Django REST framework validation errors
-        const errors = [];
+        const errors: string[] = [];
         for (const [field, msgs] of Object.entries(result.error)) {
           if (Array.isArray(msgs)) {
             errors.push(`${field}: ${msgs.join(', ')}`);
@@ -155,7 +168,7 @@ const Signup = () => {
               value={formData.address}
               onChange={handleChange}
               placeholder="Your address"
-              rows="2"
+              rows={2}
             />
           </div>
 
